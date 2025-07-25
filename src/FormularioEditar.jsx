@@ -45,3 +45,4 @@ export default function FormularioEditar({ tarea, onTareaModificada }) {
     </form>
   );
 }
+
