@@ -1,24 +1,99 @@
 import { useState, useEffect } from "react";
+import FormularioEditar from "./FormularioEditar";
+import FormularioAgregar from "./FormularioAgregar";
 
-function App() {
+export default function App() {
   const [tareas, setTareas] = useState([]);
+  const [tareaActual, setTareaActual] = useState(null);
+  const [modoEdicion, setModoEdicion] = useState(false);
 
+  // 🔄 Carga inicial de tareas
   useEffect(() => {
     fetch("http://localhost:3000/tareas")
       .then(res => res.json())
-      .then(data => setTareas(data));
+      .then(data => setTareas(data))
+      .catch(err => console.error("❌ Error al obtener tareas:", err));
   }, []);
 
+  // ✅ Agregar nueva tarea
+  const agregarTarea = async (nueva) => {
+    const res = await fetch("http://localhost:3000/tareas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nueva),
+    });
+    if (res.ok) {
+      const guardada = await res.json();
+      setTareas([...tareas, guardada]);
+    }
+  };
+
+  // ✏️ Modificar tarea existente
+  const handleTareaModificada = (modificada) => {
+    setTareas(prev =>
+      prev.map(t => (t._id === modificada._id ? modificada : t))
+    );
+    setModoEdicion(false);
+    setTareaActual(null);
+  };
+
+  // 🗑️ Eliminar tarea con confirmación
+  const eliminarTarea = async (id) => {
+    const confirmar = window.confirm("¿Estás seguro de que querés borrar esta tarea?");
+    if (!confirmar) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/tareas/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setTareas(prev => prev.filter(t => t._id !== id));
+        alert("✅ Tarea eliminada correctamente");
+        setTareaActual(null);
+        setModoEdicion(false);
+      } else {
+        alert("❌ No se pudo eliminar la tarea");
+      }
+    } catch (err) {
+      console.error("❌ Error al eliminar:", err);
+      alert("⚠️ Hubo un error al intentar eliminar la tarea");
+    }
+  };
+
   return (
-    <div>
-      <h1>Mis Tareas</h1>
-      <ul>
-        {tareas.map((t, i) => (
-          <li key={i}>{t.titulo}</li>
-        ))}
-      </ul>
+    <div className="contenedor">
+      <h2>Mis Tareas</h2>
+
+      <div className="panel-botones">
+        <button onClick={() => { setModoEdicion(false); setTareaActual(null); }}>➕ Agregar</button>
+        <button onClick={() => tareaActual && setModoEdicion(true)}>✏️ Modificar</button>
+        <button onClick={() => tareaActual && eliminarTarea(tareaActual._id)}>🗑️ Eliminar</button>
+      </div>
+
+      {/* 🧠 Elegir entre agregar o editar */}
+      {modoEdicion && tareaActual ? (
+        <FormularioEditar
+          tarea={tareaActual}
+          onTareaModificada={handleTareaModificada}
+        />
+      ) : (
+        <FormularioAgregar onNuevaTarea={agregarTarea} />
+      )}
+
+      {/* 📋 Lista de tareas */}
+      {tareas.length === 0 ? (
+        <p>📭 No hay tareas guardadas aún</p>
+      ) : (
+        <ul>
+          {tareas.map(t => (
+            <li
+              key={t._id}
+              style={{ fontWeight: tareaActual?._id === t._id ? "bold" : "normal" }}
+              onClick={() => setTareaActual(t)}
+            >
+              {t.titulo} {t.completada ? "✅" : "❌"}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
-
-export default App;
