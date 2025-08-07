@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FormularioEditar from "./FormularioEditar";
 import FormularioAgregar from "./FormularioAgregar";
+import ServiciosPage from "./pages/servicios/ServiciosPage";
+import JuventudesPage from "./pages/juventudes/JuventudesPage";
+import Home from "./pages/Home"; // Opcional
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,7 +13,6 @@ export default function App() {
   const [tareaActual, setTareaActual] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
 
-  // 🔄 Carga inicial de tareas
   useEffect(() => {
     fetch(`${API_URL}/tareas`)
       .then(res => res.json())
@@ -17,7 +20,6 @@ export default function App() {
       .catch(err => console.error("❌ Error al obtener tareas:", err));
   }, []);
 
-  // ✅ Agregar nueva tarea
   const agregarTarea = async (nueva) => {
     const res = await fetch(`${API_URL}/tareas`, {
       method: "POST",
@@ -30,7 +32,6 @@ export default function App() {
     }
   };
 
-  // ✏️ Modificar tarea existente
   const handleTareaModificada = (modificada) => {
     setTareas(prev =>
       prev.map(t => (t._id === modificada._id ? modificada : t))
@@ -39,7 +40,6 @@ export default function App() {
     setTareaActual(null);
   };
 
-  // 🗑️ Eliminar tarea con confirmación
   const eliminarTarea = async (id) => {
     const confirmar = window.confirm("¿Estás seguro de que querés borrar esta tarea?");
     if (!confirmar) return;
@@ -60,7 +60,7 @@ export default function App() {
     }
   };
 
-  return (
+  const TareasPage = () => (
     <div className="contenedor">
       <h2>Mis Tareas</h2>
 
@@ -70,7 +70,6 @@ export default function App() {
         <button onClick={() => tareaActual && eliminarTarea(tareaActual._id)}>🗑️ Eliminar</button>
       </div>
 
-      {/* 🧠 Elegir entre agregar o editar */}
       {modoEdicion && tareaActual ? (
         <FormularioEditar
           tarea={tareaActual}
@@ -80,7 +79,6 @@ export default function App() {
         <FormularioAgregar onNuevaTarea={agregarTarea} />
       )}
 
-      {/* 📋 Lista de tareas */}
       {tareas.length === 0 ? (
         <p>📭 No hay tareas guardadas aún</p>
       ) : (
@@ -97,5 +95,16 @@ export default function App() {
         </ul>
       )}
     </div>
+  );
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/tareas" element={<TareasPage />} />
+        <Route path="/servicios" element={<ServiciosPage />} />
+        <Route path="/juventudes" element={<JuventudesPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

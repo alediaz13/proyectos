@@ -2,11 +2,15 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
+// 🔗 Nuevas rutas
+import serviciosRoutes from "./routes/servicios/servicios.routes.js";
+import juventudesRoutes from "./routes/juventudes/juventudes.routes.js";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Conexión con MongoDB Atlas
+// ✅ Conexión principal (base: proyectos)
 mongoose.connect("mongodb+srv://kekovalles:15684414@proyectos.9uctnft.mongodb.net/proyectos?retryWrites=true&w=majority&appName=proyectos")
   .then(() => console.log("✅ Conectado a MongoDB Atlas (base: proyectos)"))
   .catch(err => console.error("❌ Error de conexión:", err));
@@ -20,7 +24,7 @@ const TareaSchema = new mongoose.Schema({
 // 🔗 Modelo que apunta a la colección "TodosLosProyectos"
 const Tarea = mongoose.model("Tarea", TareaSchema, "TodosLosProyectos");
 
-// 📡 Endpoints
+// 📡 Endpoints para tareas (base: proyectos)
 app.get("/tareas", async (req, res) => {
   try {
     const tareas = await Tarea.find();
@@ -29,16 +33,6 @@ app.get("/tareas", async (req, res) => {
     res.status(500).json({ error: "Error al obtener tareas" });
   }
 });
-app.get("/", (req, res) => {
-  res.send("Servidor activo ✅");
-});
-
-
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Servidor corriendo en el puerto ${port}`);
-});
-
 
 app.post("/tareas", async (req, res) => {
   try {
@@ -61,7 +55,6 @@ app.put("/tareas/:id", async (req, res) => {
   }
 });
 
-// 🗑️ Eliminar tarea
 app.delete("/tareas/:id", async (req, res) => {
   try {
     await Tarea.findByIdAndDelete(req.params.id);
@@ -72,12 +65,17 @@ app.delete("/tareas/:id", async (req, res) => {
   }
 });
 
+// 🌐 Rutas nuevas
+app.use("/servicios", serviciosRoutes);
+app.use("/juventudes", juventudesRoutes);
+
+// 🏁 Ruta raíz
 app.get("/", (req, res) => {
-  res.send("Servidor activo. Usá /tareas para ver las tareas.");
+  res.send("Servidor activo ✅ Usá /tareas, /servicios o /juventudes");
 });
 
-app.listen(3000, () => {
-  console.log("🚀 Backend corriendo en http://localhost:3000/tareas");
+// 🚀 Inicio del servidor
+const port = process.env.PORT || 3000;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`🚀 Backend corriendo en http://localhost:${port}`);
 });
-
-/* continuara*/
