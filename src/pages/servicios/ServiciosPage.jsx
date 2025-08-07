@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getServicios } from "../../services/serviciosAPI";
-import Card from "../../assets/components/Card";
+import Card from "../../components/Card";
+
 
 export default function ServiciosPage() {
   const [servicios, setServicios] = useState([]);

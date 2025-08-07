@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getJuventudes } from "../../services/juventudesAPI";
-import Card from "../../assets/components/Card";
+import Card from "../../components/Card";
+
 
 export default function JuventudesPage() {
   const [juventudes, setJuventudes] = useState([]);
