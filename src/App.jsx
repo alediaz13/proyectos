@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import FormularioEditar from "./FormularioEditar";
 import FormularioAgregar from "./FormularioAgregar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function App() {
   const [tareas, setTareas] = useState([]);
   const [tareaActual, setTareaActual] = useState(null);
@@ -9,7 +11,7 @@ export default function App() {
 
   // 🔄 Carga inicial de tareas
   useEffect(() => {
-    fetch("http://localhost:3000/tareas")
+    fetch(`${API_URL}/tareas`)
       .then(res => res.json())
       .then(data => setTareas(data))
       .catch(err => console.error("❌ Error al obtener tareas:", err));
@@ -17,7 +19,7 @@ export default function App() {
 
   // ✅ Agregar nueva tarea
   const agregarTarea = async (nueva) => {
-    const res = await fetch("http://localhost:3000/tareas", {
+    const res = await fetch(`${API_URL}/tareas`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nueva),
@@ -43,7 +45,7 @@ export default function App() {
     if (!confirmar) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/tareas/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/tareas/${id}`, { method: "DELETE" });
       if (res.ok) {
         setTareas(prev => prev.filter(t => t._id !== id));
         alert("✅ Tarea eliminada correctamente");
@@ -97,4 +99,3 @@ export default function App() {
     </div>
   );
 }
-

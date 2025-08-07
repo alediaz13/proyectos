@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function FormularioEditar({ tarea, onTareaModificada }) {
   const [titulo, setTitulo] = useState(tarea.titulo);
   const [completada, setCompletada] = useState(tarea.completada || false);
@@ -8,7 +10,7 @@ export default function FormularioEditar({ tarea, onTareaModificada }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`http://localhost:3000/tareas/${tarea._id}`, {
+    const res = await fetch(`${API_URL}/tareas/${tarea._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ titulo, completada }),
@@ -45,4 +47,3 @@ export default function FormularioEditar({ tarea, onTareaModificada }) {
     </form>
   );
 }
-
