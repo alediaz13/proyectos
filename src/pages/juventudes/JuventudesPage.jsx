@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function JuventudesPage() {
   const [datos, setDatos] = useState([]);
   const [nombre, setNombre] = useState('');
@@ -7,7 +9,7 @@ function JuventudesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/juventudes')
+    fetch(`${API_URL}/juventudes`)
       .then(res => res.json())
       .then(data => {
         console.log('Datos recibidos:', data);
@@ -27,7 +29,7 @@ function JuventudesPage() {
       intereses: [],
     };
 
-    fetch('http://localhost:3000/juventudes', {
+    fetch(`${API_URL}/juventudes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(nuevo),
@@ -46,7 +48,7 @@ function JuventudesPage() {
   };
 
   const handleEliminar = (id) => {
-    fetch(`http://localhost:3000/juventudes/${id}`, {
+    fetch(`${API_URL}/juventudes/${id}`, {
       method: 'DELETE',
     })
       .then(() => {
