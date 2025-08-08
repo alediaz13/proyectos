@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ServiciosPage = () => {
   const [servicios, setServicios] = useState([]);
   const [nombre, setNombre] = useState("");
@@ -8,7 +10,7 @@ const ServiciosPage = () => {
 
   // Cargar servicios al montar
   useEffect(() => {
-    fetch("http://localhost:3000/servicios")
+    fetch(`${API_URL}/servicios`)
       .then((res) => res.json())
       .then((data) => {
         console.log("📦 Servicios recibidos:", data);
@@ -23,12 +25,9 @@ const ServiciosPage = () => {
 
   // Agregar nuevo servicio
   const handleAgregar = () => {
-    const nuevo = {
-      nombre,
-      descripcion,
-    };
+    const nuevo = { nombre, descripcion };
 
-    fetch("http://localhost:3000/servicios", {
+    fetch(`${API_URL}/servicios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevo),
@@ -44,7 +43,7 @@ const ServiciosPage = () => {
 
   // Eliminar servicio
   const handleEliminar = (id) => {
-    fetch(`http://localhost:3000/servicios/${id}`, {
+    fetch(`${API_URL}/servicios/${id}`, {
       method: "DELETE",
     })
       .then(() => {
