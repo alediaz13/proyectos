@@ -8,3 +8,13 @@ export const obtenerJovenes = async (req, res) => {
     res.status(500).json({ error: "Error al obtener jóvenes" });
   }
 };
+
+export const agregarJoven = async (req, res) => {
+  try {
+    const nuevoJoven = new Juventud(req.body);
+    const guardado = await nuevoJoven.save();
+    res.status(201).json(guardado);
+  } catch (err) {
+    res.status(400).json({ error: "Error al agregar joven" });
+  }
+};
