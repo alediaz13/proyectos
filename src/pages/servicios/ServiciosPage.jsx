@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
+import { getServicios, crearServicio, eliminarServicio } from "../../services/serviciosAPI";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-const ServiciosPage = () => {
+function ServiciosPage() {
   const [servicios, setServicios] = useState([]);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Cargar servicios al montar
   useEffect(() => {
-    fetch(`${API_URL}/servicios`)
-      .then((res) => res.json())
+    getServicios()
       .then((data) => {
         console.log("📦 Servicios recibidos:", data);
         setServicios(data);
@@ -23,16 +20,9 @@ const ServiciosPage = () => {
       });
   }, []);
 
-  // Agregar nuevo servicio
   const handleAgregar = () => {
     const nuevo = { nombre, descripcion };
-
-    fetch(`${API_URL}/servicios`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nuevo),
-    })
-      .then((res) => res.json())
+    crearServicio(nuevo)
       .then((data) => {
         setServicios((prev) => [...prev, data]);
         setNombre("");
@@ -41,18 +31,14 @@ const ServiciosPage = () => {
       .catch((err) => console.error("❌ Error al agregar servicio:", err));
   };
 
-  // Eliminar servicio
   const handleEliminar = (id) => {
-    fetch(`${API_URL}/servicios/${id}`, {
-      method: "DELETE",
-    })
+    eliminarServicio(id)
       .then(() => {
         setServicios((prev) => prev.filter((s) => s._id !== id));
       })
       .catch((err) => console.error("❌ Error al eliminar servicio:", err));
   };
 
-  // Modificar servicio (placeholder)
   const handleModificar = (id) => {
     alert(`Modificar servicio con ID: ${id}`);
   };
@@ -101,6 +87,6 @@ const ServiciosPage = () => {
       )}
     </div>
   );
-};
+}
 
 export default ServiciosPage;
