@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getJuventudes, crearJuventud, eliminarJuventud } from '../../services/juventudesAPI';
 
 function JuventudesPage() {
   const [datos, setDatos] = useState([]);
@@ -9,15 +8,14 @@ function JuventudesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/juventudes`)
-      .then(res => res.json())
+    getJuventudes()
       .then(data => {
-        console.log('Datos recibidos:', data);
+        console.log('📦 Juventudes recibidas:', data);
         setDatos(data);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error al cargar datos:', err);
+        console.error('❌ Error al cargar juventudes:', err);
         setLoading(false);
       });
   }, []);
@@ -29,32 +27,27 @@ function JuventudesPage() {
       intereses: [],
     };
 
-    fetch(`${API_URL}/juventudes`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nuevo),
-    })
-      .then(res => res.json())
+    crearJuventud(nuevo)
       .then(data => {
-        setDatos(prev => [...prev, data]);
-        setNombre('');
-        setEdad('');
+        if (data) {
+          setDatos(prev => [...prev, data]);
+          setNombre('');
+          setEdad('');
+        }
       })
-      .catch(err => console.error('Error al agregar:', err));
+      .catch(err => console.error('❌ Error al agregar juventud:', err));
+  };
+
+  const handleEliminar = (id) => {
+    eliminarJuventud(id)
+      .then(() => {
+        setDatos(prev => prev.filter(item => item._id !== id));
+      })
+      .catch(err => console.error('❌ Error al eliminar juventud:', err));
   };
 
   const handleModificar = (id) => {
     alert(`Modificar elemento con ID: ${id}`);
-  };
-
-  const handleEliminar = (id) => {
-    fetch(`${API_URL}/juventudes/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        setDatos(prev => prev.filter(item => item._id !== id));
-      })
-      .catch(err => console.error('Error al eliminar:', err));
   };
 
   return (

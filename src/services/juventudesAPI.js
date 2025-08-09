@@ -1,7 +1,39 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "https://proyectos-1-9amg.onrender.com";
+console.log("🌐 API_URL (juventudesAPI):", API_URL);
 
 export const getJuventudes = async () => {
-  const res = await fetch(`${API_URL}/juventudes`);
-  const data = await res.json();
-  return data;
+  try {
+    const res = await fetch(`${API_URL}/juventudes`);
+    if (!res.ok) throw new Error("Error al obtener juventudes");
+    return await res.json();
+  } catch (err) {
+    console.error("❌ Error al obtener juventudes:", err.message);
+    return [];
+  }
+};
+
+export const crearJuventud = async (nuevo) => {
+  try {
+    const res = await fetch(`${API_URL}/juventudes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevo),
+    });
+    if (!res.ok) throw new Error("Error al crear juventud");
+    return await res.json();
+  } catch (err) {
+    console.error("❌ Error al crear juventud:", err.message);
+    return null;
+  }
+};
+
+export const eliminarJuventud = async (id) => {
+  try {
+    const res = await fetch(`${API_URL}/juventudes/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Error al eliminar juventud");
+  } catch (err) {
+    console.error("❌ Error al eliminar juventud:", err.message);
+  }
 };

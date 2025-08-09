@@ -1,11 +1,11 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "https://proyectos-1-9amg.onrender.com";
+console.log("🌐 API_URL (serviciosAPI):", API_URL);
 
 export const getServicios = async () => {
   try {
     const res = await fetch(`${API_URL}/servicios`);
     if (!res.ok) throw new Error("Error al obtener servicios");
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (err) {
     console.error("❌ Error al obtener servicios:", err);
     return [];
