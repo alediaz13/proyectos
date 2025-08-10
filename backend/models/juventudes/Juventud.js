@@ -1,4 +1,4 @@
-const { juventudesDB } = require('../config/db');
+const { juventudesConn } = require('../../config/db');
 const mongoose = require('mongoose');
 
 const juventudSchema = new mongoose.Schema({
@@ -6,4 +6,4 @@ const juventudSchema = new mongoose.Schema({
   edad: Number,
 });
 
-module.exports = juventudesDB.model('Juventud', juventudSchema);
+module.exports = juventudesConn.model('Juventud', juventudSchema);
