@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const API_URL = import.meta.env.VITE_API_URL;
+fetch(`${import.meta.env.VITE_API_URL}/juventudes`)
+
 
 export const useJuventudes = () => {
   const [juventudes, setJuventudes] = useState([]);
