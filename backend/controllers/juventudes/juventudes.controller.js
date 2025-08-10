@@ -1,20 +1,32 @@
-import Juventud from "../../models/juventudes/Juventud.js";
+export async function obtenerJovenes(req, res, conn) {
+  const Juventud = conn.model("Juventud", new conn.base.Schema({
+    nombre: String,
+    edad: Number,
+    intereses: [String]
+  }));
 
-export const obtenerJovenes = async (req, res) => {
   try {
-    const jovenes = await Juventud.find();
-    res.json(jovenes);
-  } catch (err) {
-    res.status(500).json({ error: "Error al obtener jóvenes" });
+    const datos = await Juventud.find();
+    res.json(datos);
+  } catch (error) {
+    console.error("❌ Error al obtener juventudes:", error);
+    res.status(500).json({ error: "Error al obtener juventudes" });
   }
-};
+}
 
-export const agregarJoven = async (req, res) => {
+export async function agregarJoven(req, res, conn) {
+  const Juventud = conn.model("Juventud", new conn.base.Schema({
+    nombre: String,
+    edad: Number,
+    intereses: [String]
+  }));
+
   try {
-    const nuevoJoven = new Juventud(req.body);
-    const guardado = await nuevoJoven.save();
-    res.status(201).json(guardado);
-  } catch (err) {
-    res.status(400).json({ error: "Error al agregar joven" });
+    const nuevo = new Juventud(req.body);
+    await nuevo.save();
+    res.status(201).json(nuevo);
+  } catch (error) {
+    console.error("❌ Error al agregar joven:", error);
+    res.status(500).json({ error: "Error al agregar joven" });
   }
-};
+}

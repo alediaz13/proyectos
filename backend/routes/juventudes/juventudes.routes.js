@@ -4,9 +4,11 @@ import {
   agregarJoven,
 } from "../../controllers/juventudes/juventudes.controller.js";
 
-const router = express.Router();
+export default function createJuventudesRouter(juventudesConn) {
+  const router = express.Router();
 
-router.get("/", obtenerJovenes);
-router.post("/", agregarJoven); // 👈 Esta es la nueva ruta
+  router.get("/", (req, res) => obtenerJovenes(req, res, juventudesConn));
+  router.post("/", (req, res) => agregarJoven(req, res, juventudesConn));
 
-export default router;
+  return router;
+}
