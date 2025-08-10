@@ -1,6 +1,7 @@
-// backend/routes/servicios.js
-const express = require('express');
-const Servicio = require('../../models/servicios/Servicio');
+// backend/routes/servicios/servicios.routes.js
+
+import express from 'express';
+import Servicio from '../../models/servicios/Servicio.js';
 
 const router = express.Router();
 
@@ -25,4 +26,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
