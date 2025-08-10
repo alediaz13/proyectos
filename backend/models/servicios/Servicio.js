@@ -1,9 +1,9 @@
-const { serviciosConn } = require('../../config/db');
+// models/servicios/Servicio.js
 const mongoose = require('mongoose');
+const { serviciosDB } = require('../../../config/db');
 
 const servicioSchema = new mongoose.Schema({
-  nombre: String,
-  descripcion: String,
+  // tu esquema acá
 });
 
-module.exports = serviciosConn.model('Servicio', servicioSchema);
+module.exports = serviciosDB.model('Servicio', servicioSchema);
