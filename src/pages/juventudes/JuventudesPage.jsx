@@ -1,96 +1,128 @@
-import { useEffect, useState } from 'react';
-import { getJuventudes, crearJuventud, eliminarJuventud } from '../../services/juventudesAPI';
+import { useEffect, useState } from "react";
+import {
+  getJuventudes,
+  crearJuventud,
+  eliminarJuventud,
+  modificarJuventud,
+} from "../../services/juventudesAPI";
+import Card from "../../components/Card";
 
 function JuventudesPage() {
-  const [datos, setDatos] = useState([]);
-  const [nombre, setNombre] = useState('');
-  const [edad, setEdad] = useState('');
+  const [jovenes, setJovenes] = useState([]);
+  const [nombre, setNombre] = useState("");
+  const [edad, setEdad] = useState("");
   const [loading, setLoading] = useState(true);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [jovenActual, setJovenActual] = useState(null);
 
   useEffect(() => {
     getJuventudes()
-      .then(data => {
-        console.log('📦 Juventudes recibidas:', data);
-        setDatos(data);
+      .then((data) => {
+        console.log("📦 Jóvenes recibidos:", data);
+        setJovenes(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error('❌ Error al cargar juventudes:', err);
+      .catch((err) => {
+        console.error("❌ Error al obtener jóvenes:", err);
         setLoading(false);
       });
   }, []);
 
   const handleAgregar = () => {
-    const nuevo = {
-      nombre,
-      edad: parseInt(edad),
-      intereses: [],
-    };
+    if (!nombre.trim()) {
+      alert("⚠️ El nombre es obligatorio");
+      return;
+    }
 
-    crearJuventud(nuevo)
-      .then(data => {
-        if (data) {
-          setDatos(prev => [...prev, data]);
-          setNombre('');
-          setEdad('');
-        }
-      })
-      .catch(err => console.error('❌ Error al agregar juventud:', err));
+    const nuevo = { nombre, edad: parseInt(edad) || 0 };
+
+    if (modoEdicion && jovenActual) {
+      modificarJuventud(jovenActual._id, nuevo)
+        .then((modificado) => {
+          setJovenes((prev) =>
+            prev.map((j) => (j._id === modificado._id ? modificado : j))
+          );
+          resetFormulario();
+        })
+        .catch((err) => console.error("❌ Error al modificar joven:", err));
+    } else {
+      crearJuventud(nuevo)
+        .then((data) => {
+          setJovenes((prev) => [...prev, data]);
+          resetFormulario();
+        })
+        .catch((err) => console.error("❌ Error al agregar joven:", err));
+    }
   };
 
   const handleEliminar = (id) => {
+    const confirmar = window.confirm("¿Estás seguro de que querés eliminar este joven?");
+    if (!confirmar) return;
+
     eliminarJuventud(id)
       .then(() => {
-        setDatos(prev => prev.filter(item => item._id !== id));
+        setJovenes((prev) => prev.filter((j) => j._id !== id));
+        if (jovenActual?._id === id) resetFormulario();
       })
-      .catch(err => console.error('❌ Error al eliminar juventud:', err));
+      .catch((err) => console.error("❌ Error al eliminar joven:", err));
   };
 
-  const handleModificar = (id) => {
-    alert(`Modificar elemento con ID: ${id}`);
+  const handleModificar = (joven) => {
+    setModoEdicion(true);
+    setJovenActual(joven);
+    setNombre(joven.nombre);
+    setEdad(joven.edad.toString());
+  };
+
+  const resetFormulario = () => {
+    setNombre("");
+    setEdad("");
+    setModoEdicion(false);
+    setJovenActual(null);
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>📋 Base de Datos: Juventudes</h2>
+    <div style={{ padding: "2rem" }}>
+      <h2>🧑‍🎓 Base de Datos: Juventudes</h2>
 
-      <div style={{ marginBottom: '1rem' }}>
+      <div style={{ marginBottom: "1rem" }}>
         <input
           type="text"
-          placeholder="Nombre"
+          placeholder="Nombre del joven"
           value={nombre}
-          onChange={e => setNombre(e.target.value)}
+          onChange={(e) => setNombre(e.target.value)}
         />
         <input
           type="number"
           placeholder="Edad"
           value={edad}
-          onChange={e => setEdad(e.target.value)}
-          style={{ marginLeft: '0.5rem' }}
+          onChange={(e) => setEdad(e.target.value)}
+          style={{ marginLeft: "0.5rem" }}
         />
-        <button onClick={handleAgregar} style={{ marginLeft: '0.5rem' }}>
-          ➕ Agregar
+        <button onClick={handleAgregar} style={{ marginLeft: "0.5rem" }}>
+          {modoEdicion ? "✏️ Modificar" : "➕ Agregar"}
         </button>
+        {modoEdicion && (
+          <button onClick={resetFormulario} style={{ marginLeft: "0.5rem" }}>
+            ❌ Cancelar
+          </button>
+        )}
       </div>
 
       {loading ? (
-        <p>Cargando datos...</p>
-      ) : datos.length === 0 ? (
-        <p>No hay registros disponibles.</p>
+        <p>Cargando jóvenes...</p>
+      ) : jovenes.length === 0 ? (
+        <p>No hay jóvenes registrados.</p>
       ) : (
-        <ul>
-          {datos.map(item => (
-            <li key={item._id} style={{ marginBottom: '0.5rem' }}>
-              <strong>{item.nombre}</strong> ({item.edad} años)
-              <button onClick={() => handleModificar(item._id)} style={{ marginLeft: '1rem' }}>
-                ✏️ Modificar
-              </button>
-              <button onClick={() => handleEliminar(item._id)} style={{ marginLeft: '0.5rem' }}>
-                🗑️ Eliminar
-              </button>
-            </li>
-          ))}
-        </ul>
+        jovenes.map((joven) => (
+          <Card
+            key={joven._id}
+            nombre={joven.nombre}
+            descripcion={`Edad: ${joven.edad}`}
+            onModificar={() => handleModificar(joven)}
+            onEliminar={() => handleEliminar(joven._id)}
+          />
+        ))
       )}
     </div>
   );

@@ -1,3 +1,5 @@
+// src/services/serviciosAPI.js
+
 const API_URL = import.meta.env.VITE_API_URL || "https://proyectos-1-9amg.onrender.com";
 console.log("🌐 API_URL (serviciosAPI):", API_URL);
 
@@ -7,7 +9,7 @@ export const getServicios = async () => {
     if (!res.ok) throw new Error("Error al obtener servicios");
     return await res.json();
   } catch (err) {
-    console.error("❌ Error al obtener servicios:", err);
+    console.error("❌ Error al obtener servicios:", err.message);
     return [];
   }
 };
@@ -22,7 +24,7 @@ export const crearServicio = async (nuevo) => {
     if (!res.ok) throw new Error("Error al crear servicio");
     return await res.json();
   } catch (err) {
-    console.error("❌ Error al crear servicio:", err);
+    console.error("❌ Error al crear servicio:", err.message);
     return null;
   }
 };
@@ -34,6 +36,21 @@ export const eliminarServicio = async (id) => {
     });
     if (!res.ok) throw new Error("Error al eliminar servicio");
   } catch (err) {
-    console.error("❌ Error al eliminar servicio:", err);
+    console.error("❌ Error al eliminar servicio:", err.message);
+  }
+};
+
+export const modificarServicio = async (id, datosActualizados) => {
+  try {
+    const res = await fetch(`${API_URL}/servicios/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datosActualizados),
+    });
+    if (!res.ok) throw new Error("Error al modificar servicio");
+    return await res.json();
+  } catch (err) {
+    console.error("❌ Error al modificar servicio:", err.message);
+    return null;
   }
 };
