@@ -1,6 +1,9 @@
 // backend/models/juventudes/Juventud.js
-const juventudesConnection = require('../../connections/juventudes');
-const { Schema } = require('mongoose');
+
+import juventudesConnection from '../../connections/juventudes.js';
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
 
 const juventudSchema = new Schema({
   nombre: String,
@@ -11,4 +14,4 @@ const juventudSchema = new Schema({
 
 const Juventud = juventudesConnection.model('Juventud', juventudSchema);
 
-module.exports = Juventud;
+export default Juventud;

@@ -1,35 +1,30 @@
 // backend/index.js
-const express = require('express');
-const dotenv = require('dotenv');
-const juventudesRoutes = require('./routes/juventudes/juventudes.routes');
-const serviciosRoutes = require('./routes/servicios/servicios.routes');
 
-const cors = require('cors');
+// 1. Cargar variables de entorno
+import dotenv from 'dotenv';
+dotenv.config();
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+// 2. Importar dependencias
+import express from 'express';
+import cors from 'cors';
 
+// 3. Crear app
 const app = express();
-app.use(express.json());
-app.use(cors()); // ✅ Habilita CORS para el frontend
 
-// 🔗 Activar rutas
-app.use('/api/servicios', serviciosRoutes);
+// 4. Middlewares
+app.use(cors()); // Permite peticiones desde el frontend
+app.use(express.json()); // Permite leer JSON en req.body
+
+// 5. Importar rutas
+import juventudesRoutes from './routes/juventudes/juventudes.routes.js';
+import serviciosRoutes from './routes/servicios/servicios.routes.js';
+
+// 6. Usar rutas
 app.use('/api/juventudes', juventudesRoutes);
+app.use('/api/servicios', serviciosRoutes);
 
-// 🔍 Endpoint de prueba
-app.get('/ping', (req, res) => {
-  res.json({ status: 'ok', mensaje: '✅ Backend activo y respondiendo' });
-});
-
-// 🛠️ Ruta base
-app.get('/', (req, res) => {
-  res.send('🚀 API funcionando con múltiples conexiones');
-});
-
-// 🔊 Puerto
-const PORT = process.env.PORT || 10000;
+// 7. Puerto
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Servidor corriendo en puerto ${PORT}`);
+  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });

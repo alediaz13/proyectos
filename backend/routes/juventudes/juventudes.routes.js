@@ -1,6 +1,7 @@
-// backend/routes/juventudes.js
-const express = require('express');
-const Juventud = require('../models/juventudes/Juventud');
+// backend/routes/juventudes/juventudes.routes.js
+
+import express from 'express';
+import Juventud from '../../models/juventudes/Juventud.js';
 
 const router = express.Router();
 
@@ -25,4 +26,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

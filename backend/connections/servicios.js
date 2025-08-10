@@ -1,8 +1,9 @@
 // backend/connections/servicios.js
-const connectDB = require('../config/db');
+
+import connectDB from '../config/db.js';
 
 const uri = process.env.MONGO_URI_SERVICIOS;
 
 const serviciosConnection = connectDB(uri, 'servicios');
 
-module.exports = serviciosConnection;
+export default serviciosConnection;

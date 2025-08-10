@@ -1,22 +1,26 @@
 // backend/config/db.js
-const mongoose = require('mongoose');
 
-const connectDB = async (uri, nombre) => {
+import mongoose from 'mongoose';
+
+const connectDB = (uri, nombre) => {
   if (!uri || !uri.startsWith('mongodb')) {
     throw new Error(`❌ URI inválida para ${nombre}: ${uri}`);
   }
 
-  try {
-    const conn = await mongoose.createConnection(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+  const conn = mongoose.createConnection(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  conn.on('connected', () => {
     console.log(`✅ Conectado a MongoDB (${nombre})`);
-    return conn;
-  } catch (error) {
-    console.error(`❌ Error al conectar a ${nombre}:`, error.message);
-    process.exit(1);
-  }
+  });
+
+  conn.on('error', (err) => {
+    console.error(`❌ Error en conexión (${nombre}):`, err.message);
+  });
+
+  return conn;
 };
 
-module.exports = connectDB;
+export default connectDB;
