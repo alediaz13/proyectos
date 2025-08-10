@@ -7,7 +7,8 @@ app.use(cors());
 app.use(express.json());
 
 // Conexiones a MongoDB (se ejecutan desde backend/config/db.js)
-require('./backend/config/db');
+require('./config/db');
+
 
 // Rutas
 const serviciosRoutes = require('./backend/routes/servicios/servicios.routes');
