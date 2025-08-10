@@ -1,14 +1,9 @@
-import serviciosConn from "../../config/serviciosConn.js"; // ✅ correcta
-import mongoose from "mongoose";
+const { serviciosConn } = require('../../config/db');
+const mongoose = require('mongoose');
 
 const servicioSchema = new mongoose.Schema({
-  nombre: { type: String, required: true },
+  nombre: String,
   descripcion: String,
-  categoria: String,
-  activo: { type: Boolean, default: true },
-  // Agregá los campos que necesites
 });
 
-const Servicio = serviciosConn.model("Servicio", servicioSchema);
-
-export default Servicio;
+module.exports = serviciosConn.model('Servicio', servicioSchema);

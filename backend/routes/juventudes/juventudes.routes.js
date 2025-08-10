@@ -1,14 +1,15 @@
-import express from "express";
-import {
-  obtenerJovenes,
-  agregarJoven,
-} from "../../controllers/juventudes/juventudes.controller.js";
+const express = require('express');
+const router = express.Router();
+const {
+  obtenerJuventudes,
+  crearJuventud,
+  actualizarJuventud,
+  eliminarJuventud,
+} = require('../../controllers/juventudes/juventudes.controller');
 
-export default function createJuventudesRouter(juventudesConn) {
-  const router = express.Router();
+router.get('/', obtenerJuventudes);
+router.post('/', crearJuventud);
+router.put('/:id', actualizarJuventud);
+router.delete('/:id', eliminarJuventud);
 
-  router.get("/", (req, res) => obtenerJovenes(req, res, juventudesConn));
-  router.post("/", (req, res) => agregarJoven(req, res, juventudesConn));
-
-  return router;
-}
+module.exports = router;

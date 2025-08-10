@@ -1,32 +1,49 @@
-export async function obtenerJovenes(req, res, conn) {
-  const Juventud = conn.model("Juventud", new conn.base.Schema({
-    nombre: String,
-    edad: Number,
-    intereses: [String]
-  }));
+const Juventud = require('../../models/juventudes/Juventud.js');
 
+const obtenerJuventudes = async (req, res) => {
   try {
-    const datos = await Juventud.find();
-    res.json(datos);
+    const juventudes = await Juventud.find();
+    res.json(juventudes);
   } catch (error) {
-    console.error("❌ Error al obtener juventudes:", error);
-    res.status(500).json({ error: "Error al obtener juventudes" });
+    res.status(500).json({ error: 'Error al obtener juventudes' });
   }
-}
+};
 
-export async function agregarJoven(req, res, conn) {
-  const Juventud = conn.model("Juventud", new conn.base.Schema({
-    nombre: String,
-    edad: Number,
-    intereses: [String]
-  }));
-
+const crearJuventud = async (req, res) => {
   try {
-    const nuevo = new Juventud(req.body);
-    await nuevo.save();
-    res.status(201).json(nuevo);
+    const nuevaJuventud = new Juventud(req.body);
+    await nuevaJuventud.save();
+    res.status(201).json(nuevaJuventud);
   } catch (error) {
-    console.error("❌ Error al agregar joven:", error);
-    res.status(500).json({ error: "Error al agregar joven" });
+    res.status(500).json({ error: 'Error al crear juventud' });
   }
-}
+};
+
+const actualizarJuventud = async (req, res) => {
+  try {
+    const juventudActualizada = await Juventud.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(juventudActualizada);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar juventud' });
+  }
+};
+
+const eliminarJuventud = async (req, res) => {
+  try {
+    await Juventud.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: 'Juventud eliminada' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar juventud' });
+  }
+};
+
+module.exports = {
+  obtenerJuventudes,
+  crearJuventud,
+  actualizarJuventud,
+  eliminarJuventud,
+};

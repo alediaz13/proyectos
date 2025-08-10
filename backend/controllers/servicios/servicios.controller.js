@@ -1,44 +1,49 @@
-import Servicio from "../../models/servicios/Servicio.js";
+const Servicio = require('../../models/servicios/servicio.js');
 
-// Obtener todos los servicios
-export const obtenerServicios = async (req, res) => {
+const obtenerServicios = async (req, res) => {
   try {
     const servicios = await Servicio.find();
     res.json(servicios);
-  } catch (err) {
-    res.status(500).json({ error: "Error al obtener servicios" });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener servicios' });
   }
 };
 
-// Agregar un nuevo servicio
-export const agregarServicio = async (req, res) => {
+const crearServicio = async (req, res) => {
   try {
     const nuevoServicio = new Servicio(req.body);
-    const guardado = await nuevoServicio.save();
-    res.status(201).json(guardado);
-  } catch (err) {
-    res.status(400).json({ error: "Error al agregar servicio" });
+    await nuevoServicio.save();
+    res.status(201).json(nuevoServicio);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear servicio' });
   }
 };
 
-// Eliminar un servicio por ID
-export const eliminarServicio = async (req, res) => {
+const actualizarServicio = async (req, res) => {
   try {
-    const { id } = req.params;
-    await Servicio.findByIdAndDelete(id);
-    res.status(200).json({ mensaje: "Servicio eliminado correctamente" });
-  } catch (err) {
-    res.status(500).json({ error: "Error al eliminar servicio" });
+    const servicioActualizado = await Servicio.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(servicioActualizado);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar servicio' });
   }
 };
 
-// Modificar un servicio por ID
-export const modificarServicio = async (req, res) => {
+const eliminarServicio = async (req, res) => {
   try {
-    const { id } = req.params;
-    const actualizado = await Servicio.findByIdAndUpdate(id, req.body, { new: true });
-    res.json(actualizado);
-  } catch (err) {
-    res.status(400).json({ error: "Error al modificar servicio" });
+    await Servicio.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: 'Servicio eliminado' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar servicio' });
   }
+};
+
+module.exports = {
+  obtenerServicios,
+  crearServicio,
+  actualizarServicio,
+  eliminarServicio,
 };

@@ -1,49 +1,23 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
-
-// 🔗 Rutas
-import serviciosRoutes from "./routes/servicios/servicios.routes.js";
-import createJuventudesRoutes from "./routes/juventudes/juventudes.routes.js";
-
-dotenv.config();
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Conexión principal (base: proyectos)
-mongoose.connect(process.env.MONGO_URI_SERVICIOS, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log("✅ Conectado a MongoDB Atlas (base: proyectos)"))
-  .catch(err => console.error("❌ Error de conexión a proyectos:", err));
+// Conexiones a MongoDB (se ejecutan desde backend/config/db.js)
+require('./backend/config/db');
 
-// ✅ Conexión secundaria (base: juventudesDB)
-const juventudesConn = mongoose.createConnection(process.env.MONGO_URI_JUVENTUDES, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-juventudesConn.on("connected", () => {
-  console.log("✅ Conectado a MongoDB Atlas (base: juventudesDB)");
-});
-juventudesConn.on("error", err => {
-  console.error("❌ Error de conexión a juventudesDB:", err);
-});
+// Rutas
+const serviciosRoutes = require('./backend/routes/servicios/servicios.routes');
+const juventudesRoutes = require('./backend/routes/juventudes/juventudes.routes');
 
-// 🌐 Rutas activas
-app.use("/servicios", serviciosRoutes);
-app.use("/juventudes", createJuventudesRoutes(juventudesConn));
+app.use('/api/servicios', serviciosRoutes);
+app.use('/api/juventudes', juventudesRoutes);
 
-// 🏁 Ruta raíz
-app.get("/", (req, res) => {
-  res.send("Servidor activo ✅ Usá /servicios o /juventudes");
-});
-
-// 🚀 Inicio del servidor
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => {
-  console.log(`🚀 Backend corriendo en puerto ${port}`);
+// Puerto
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });

@@ -1,23 +1,15 @@
-  import express from "express";
-  import {
-    obtenerServicios,
-    agregarServicio,
-    eliminarServicio,
-    modificarServicio,
-  } from "../../controllers/servicios/servicios.controller.js";
+const express = require('express');
+const router = express.Router();
+const {
+  obtenerServicios,
+  crearServicio,
+  actualizarServicio,
+  eliminarServicio,
+} = require('../../controllers/servicios/servicios.controller');
 
-  const router = express.Router();
+router.get('/', obtenerServicios);
+router.post('/', crearServicio);
+router.put('/:id', actualizarServicio);
+router.delete('/:id', eliminarServicio);
 
-  // Obtener todos los servicios
-  router.get("/", obtenerServicios);
-
-  // Agregar un nuevo servicio
-  router.post("/", agregarServicio);
-
-  // Eliminar un servicio por ID
-  router.delete("/:id", eliminarServicio);
-
-  // Modificar un servicio por ID
-  router.put("/:id", modificarServicio);
-
-  export default router;
+module.exports = router;
