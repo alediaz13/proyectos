@@ -1,22 +1,31 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from "dotenv";
 
 // 🔗 Rutas
 import serviciosRoutes from "./routes/servicios/servicios.routes.js";
 import createJuventudesRoutes from "./routes/juventudes/juventudes.routes.js";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // ✅ Conexión principal (base: proyectos)
-mongoose.connect("mongodb+srv://kekovalles:15684414@proyectos.9uctnft.mongodb.net/proyectos?retryWrites=true&w=majority&appName=proyectos")
+mongoose.connect(process.env.MONGO_URI_SERVICIOS, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log("✅ Conectado a MongoDB Atlas (base: proyectos)"))
   .catch(err => console.error("❌ Error de conexión a proyectos:", err));
 
 // ✅ Conexión secundaria (base: juventudesDB)
-const juventudesConn = mongoose.createConnection("mongodb+srv://kekovalles:15684414@proyectos.9uctnft.mongodb.net/juventudesDB?retryWrites=true&w=majority&appName=proyectos");
+const juventudesConn = mongoose.createConnection(process.env.MONGO_URI_JUVENTUDES, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 juventudesConn.on("connected", () => {
   console.log("✅ Conectado a MongoDB Atlas (base: juventudesDB)");
 });
@@ -36,7 +45,5 @@ app.get("/", (req, res) => {
 // 🚀 Inicio del servidor
 const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0', () => {
-  console.log(`🚀 Backend corriendo en http://localhost:${port}`);
+  console.log(`🚀 Backend corriendo en puerto ${port}`);
 });
-
-
