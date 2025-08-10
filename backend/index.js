@@ -11,8 +11,8 @@ require('./config/db');
 
 
 // Rutas
-const serviciosRoutes = require('./backend/routes/servicios/servicios.routes');
-const juventudesRoutes = require('./backend/routes/juventudes/juventudes.routes');
+const serviciosRoutes = require('./routes/servicios/servicios.routes');
+const juventudesRoutes = require('./routes/juventudes/juventudes.routes');
 
 app.use('/api/servicios', serviciosRoutes);
 app.use('/api/juventudes', juventudesRoutes);
