@@ -1,4 +1,5 @@
-const Servicio =require('../../models/servicios/servicio.js');
+const Servicio =require('../../models/servicios/Servicio.js');
+
 
 
 const obtenerServicios = async (req, res) => {
