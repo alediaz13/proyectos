@@ -1,6 +1,9 @@
 // backend/models/servicios/Servicio.js
-const serviciosConnection = require('../../connections/servicios');
-const { Schema } = require('mongoose');
+
+import serviciosConnection from '../../connections/servicios.js';
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
 
 const servicioSchema = new Schema({
   nombre: String,
@@ -11,4 +14,4 @@ const servicioSchema = new Schema({
 
 const Servicio = serviciosConnection.model('Servicio', servicioSchema);
 
-module.exports = Servicio;
+export default Servicio;

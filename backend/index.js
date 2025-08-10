@@ -15,6 +15,10 @@ const app = express();
 app.use(cors()); // Permite peticiones desde el frontend
 app.use(express.json()); // Permite leer JSON en req.body
 
+app.use('/api/juventudes', juventudesRoutes);
+app.use('/api/servicios', serviciosRoutes);
+
+
 // 5. Importar rutas
 import juventudesRoutes from './routes/juventudes/juventudes.routes.js';
 import serviciosRoutes from './routes/servicios/servicios.routes.js';
