@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getApiUrl, API_CONFIG } from '../config/api.js';
 
 export const useServicios = () => {
   const [servicios, setServicios] = useState([]);
@@ -8,7 +7,7 @@ export const useServicios = () => {
 
   const obtenerServicios = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/servicios`);
+      const res = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.SERVICIOS));
       const data = await res.json();
       setServicios(data);
     } catch (error) {
@@ -20,7 +19,7 @@ export const useServicios = () => {
 
   const crearServicio = async (nuevoServicio) => {
     try {
-      const res = await fetch(`${API_URL}/api/servicios`, {
+      const res = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.SERVICIOS), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(nuevoServicio),

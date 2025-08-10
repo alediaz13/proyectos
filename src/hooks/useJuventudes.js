@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL;
-fetch(`${import.meta.env.VITE_API_URL}/juventudes`)
-
+import { getApiUrl, API_CONFIG } from '../config/api.js';
 
 export const useJuventudes = () => {
   const [juventudes, setJuventudes] = useState([]);
@@ -10,7 +7,7 @@ export const useJuventudes = () => {
 
   const obtenerJuventudes = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/juventudes`);
+      const res = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.JUVENTUDES));
       const data = await res.json();
       setJuventudes(data);
     } catch (error) {
@@ -22,7 +19,7 @@ export const useJuventudes = () => {
 
   const crearJuventud = async (nuevaJuventud) => {
     try {
-      const res = await fetch(`${API_URL}/api/juventudes`, {
+      const res = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.JUVENTUDES), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(nuevaJuventud),
