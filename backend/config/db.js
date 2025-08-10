@@ -1,14 +1,22 @@
-// config/db.js
+// backend/config/db.js
 const mongoose = require('mongoose');
 
-const serviciosDB = mongoose.createConnection(process.env.MONGO_URI_SERVICIOS, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const connectDB = async (uri, nombre) => {
+  if (!uri || !uri.startsWith('mongodb')) {
+    throw new Error(`❌ URI inválida para ${nombre}: ${uri}`);
+  }
 
-const juventudesDB = mongoose.createConnection(process.env.MONGO_URI_JUVENTUDES, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+  try {
+    const conn = await mongoose.createConnection(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`✅ Conectado a MongoDB (${nombre})`);
+    return conn;
+  } catch (error) {
+    console.error(`❌ Error al conectar a ${nombre}:`, error.message);
+    process.exit(1);
+  }
+};
 
-module.exports = { serviciosDB, juventudesDB };
+module.exports = connectDB;

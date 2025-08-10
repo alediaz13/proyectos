@@ -1,10 +1,14 @@
-const { juventudesDB } = require('../../config/db');
-const mongoose = require('mongoose');
+// backend/models/juventudes/Juventud.js
+const juventudesConnection = require('../../connections/juventudes');
+const { Schema } = require('mongoose');
 
-const juventudSchema = new mongoose.Schema({
+const juventudSchema = new Schema({
   nombre: String,
   edad: Number,
+  intereses: [String],
+  activo: Boolean,
 });
 
-module.exports = juventudesDB.model('Juventud', juventudSchema);
+const Juventud = juventudesConnection.model('Juventud', juventudSchema);
 
+module.exports = Juventud;

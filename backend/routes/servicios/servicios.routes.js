@@ -1,15 +1,28 @@
+// backend/routes/servicios.js
 const express = require('express');
-const router = express.Router();
-const {
-  obtenerServicios,
-  crearServicio,
-  actualizarServicio,
-  eliminarServicio,
-} = require('../../controllers/servicios/servicios.controller');
+const Servicio = require('../../models/servicios/Servicio');
 
-router.get('/', obtenerServicios);
-router.post('/', crearServicio);
-router.put('/:id', actualizarServicio);
-router.delete('/:id', eliminarServicio);
+const router = express.Router();
+
+// Obtener todos los servicios
+router.get('/', async (req, res) => {
+  try {
+    const servicios = await Servicio.find();
+    res.json(servicios);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener servicios' });
+  }
+});
+
+// Crear un nuevo servicio
+router.post('/', async (req, res) => {
+  try {
+    const nuevo = new Servicio(req.body);
+    const guardado = await nuevo.save();
+    res.status(201).json(guardado);
+  } catch (error) {
+    res.status(400).json({ error: 'Error al crear servicio' });
+  }
+});
 
 module.exports = router;
